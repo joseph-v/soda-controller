@@ -25,8 +25,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	//"errors"
-	//"fmt"
+	"errors"
 	//"google.golang.org/grpc"
 
 	log "github.com/golang/glog"
@@ -87,70 +86,6 @@ type controller struct {
 	DockInfo *model.DockSpec
 }
 
-func (c *controller) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) ExtendVolume(opt *pb.ExtendVolumeOpts) (*model.VolumeSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) CreateVolumeAttachment(opt *pb.CreateVolumeAttachmentOpts) (*model.VolumeAttachmentSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) DeleteVolumeAttachment(opt *pb.DeleteVolumeAttachmentOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) CreateVolumeSnapshot(opt *pb.CreateVolumeSnapshotOpts) (*model.VolumeSnapshotSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) DeleteVolumeSnapshot(opt *pb.DeleteVolumeSnapshotOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) CreateReplication(opt *pb.CreateReplicationOpts) (*model.ReplicationSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) DeleteReplication(opt *pb.DeleteReplicationOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) EnableReplication(opt *pb.EnableReplicationOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) DisableReplication(opt *pb.DisableReplicationOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) FailoverReplication(opt *pb.FailoverReplicationOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) AttachVolume(opt *pb.AttachVolumeOpts) (string, error) {
-	panic("implement me")
-}
-
-func (c *controller) DetachVolume(opt *pb.DetachVolumeOpts) error {
-	panic("implement me")
-}
-
-func (c *controller) CreateVolumeGroup(*pb.CreateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) UpdateVolumeGroup(*pb.UpdateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
-	panic("implement me")
-}
-
-func (c *controller) DeleteVolumeGroup(*pb.DeleteVolumeGroupOpts) error {
-	panic("implement me")
-}
-
 func (c *controller) SetDock(dockInfo *model.DockSpec) {
 	c.DockInfo = dockInfo
 }
@@ -160,28 +95,6 @@ func (c *controller) CreateVolume(opt *pb.CreateVolumeOpts) (*model.VolumeSpec, 
 		log.Error("when connecting dock client:", err)
 		return nil, err
 	}
-    // *************
-	//log.Info("I m here....")
-	//fmt.Println("IN controller function....")
-	//conn, err := grpc.Dial(c.DockInfo.Endpoint, grpc.WithInsecure(), grpc.WithBlock())
-	//if err != nil {
-	//	log.Errorf("did not connect: %+v\n", err)
-	//	return nil, err
-	//}
-	//d := pb.NewProvisionDockClient(conn)
-	//response, err := d.CreateVolume(context.Background(), opt)
-	//if err != nil {
-	//	log.Error("create volume failed in controller service:", err)
-	//	return nil, err
-	//}
-	//if errorMsg := response.GetError(); errorMsg != nil {
-	//	log.Errorf("failed to create volume in controller, code: %v, message: %v",
-	//		errorMsg.GetCode(), errorMsg.GetDescription())
-	//	return nil, err
-	//}
-
-
-
 
 	response, err := c.Client.CreateVolume(context.Background(), opt)
 	if err != nil {
@@ -205,358 +118,358 @@ func (c *controller) CreateVolume(opt *pb.CreateVolumeOpts) (*model.VolumeSpec, 
 
 }
 
-//func (c *controller) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DeleteVolume(context.Background(), opt)
-//	if err != nil {
-//		log.Error("delete volume failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) ExtendVolume(opt *pb.ExtendVolumeOpts) (*model.VolumeSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.ExtendVolume(context.Background(), opt)
-//	if err != nil {
-//		log.Error("extend volume failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil,
-//			fmt.Errorf("failed to extend volume in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var vol = &model.VolumeSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vol); err != nil {
-//		log.Error("extend volume failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	return vol, nil
-//}
-//
-//func (c *controller) CreateVolumeAttachment(opt *pb.CreateVolumeAttachmentOpts) (*model.VolumeAttachmentSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.CreateVolumeAttachment(context.Background(), opt)
-//	if err != nil {
-//		log.Error("create volume attachment failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil,
-//			fmt.Errorf("failed to create volume attachment in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var atc = &model.VolumeAttachmentSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), atc); err != nil {
-//		log.Error("create volume attachment failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	log.Infof("Volume controller: volume attachment creation successfully, %v", atc)
-//
-//	return atc, nil
-//}
-//
-//func (c *controller) DeleteVolumeAttachment(opt *pb.DeleteVolumeAttachmentOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DeleteVolumeAttachment(context.Background(), opt)
-//	if err != nil {
-//		log.Error("delete volume attachment failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) CreateVolumeSnapshot(opt *pb.CreateVolumeSnapshotOpts) (*model.VolumeSnapshotSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.CreateVolumeSnapshot(context.Background(), opt)
-//	if err != nil {
-//		log.Error("create volume snapshot failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil,
-//			fmt.Errorf("failed to create volume snapshot in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var snp = &model.VolumeSnapshotSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), snp); err != nil {
-//		log.Error("create volume snapshot failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	return snp, nil
-//}
-//
-//func (c *controller) DeleteVolumeSnapshot(opt *pb.DeleteVolumeSnapshotOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DeleteVolumeSnapshot(context.Background(), opt)
-//	if err != nil {
-//		log.Error("delete volume snapshot failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) CreateReplication(opt *pb.CreateReplicationOpts) (*model.ReplicationSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.CreateReplication(context.Background(), opt)
-//	if err != nil {
-//		log.Error("create volume replication failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil,
-//			fmt.Errorf("failed to create volume replication in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var snp = &model.ReplicationSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), snp); err != nil {
-//		log.Error("create volume replication failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	return snp, nil
-//}
-//
-//func (c *controller) DeleteReplication(opt *pb.DeleteReplicationOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DeleteReplication(context.Background(), opt)
-//	if err != nil {
-//		log.Error("delete replication failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) EnableReplication(opt *pb.EnableReplicationOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.EnableReplication(context.Background(), opt)
-//	if err != nil {
-//		log.Error("enable replication failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) DisableReplication(opt *pb.DisableReplicationOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DisableReplication(context.Background(), opt)
-//	if err != nil {
-//		log.Error("disable replication failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) FailoverReplication(opt *pb.FailoverReplicationOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.FailoverReplication(context.Background(), opt)
-//	if err != nil {
-//		log.Error("failover replication failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) AttachVolume(opt *pb.AttachVolumeOpts) (string, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return "", err
-//	}
-//
-//	response, err := c.Client.AttachVolume(context.Background(), opt)
-//	if err != nil {
-//		log.Error("attach volume failed in volume controller:", err)
-//		return "", err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return "",
-//			fmt.Errorf("failed to attach volume in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	return response.GetResult().GetMessage(), nil
-//}
-//
-//func (c *controller) DetachVolume(opt *pb.DetachVolumeOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//	response, err := c.Client.DetachVolume(context.Background(), opt)
-//	if err != nil {
-//		log.Error("detach volume failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
-//func (c *controller) CreateVolumeGroup(opt *pb.CreateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.CreateVolumeGroup(context.Background(), opt)
-//	if err != nil {
-//		log.Error("create volume group failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil,
-//			fmt.Errorf("failed to create volume group in volume controller, code: %v, message: %v",
-//				errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var vg = &model.VolumeGroupSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vg); err != nil {
-//		log.Error("create volume group failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	return vg, nil
-//}
-//
-//func (c *controller) UpdateVolumeGroup(opt *pb.UpdateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return nil, err
-//	}
-//
-//	response, err := c.Client.UpdateVolumeGroup(context.Background(), opt)
-//	if err != nil {
-//		log.Error("update volume group failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return nil, fmt.Errorf("failed to update volume group in volume controller, code: %v, message: %v",
-//			errorMsg.GetCode(), errorMsg.GetDescription())
-//	}
-//
-//	var vg = &model.VolumeGroupSpec{}
-//	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vg); err != nil {
-//		log.Error("update volume group failed in volume controller:", err)
-//		return nil, err
-//	}
-//
-//	return vg, nil
-//}
-//
-//func (c *controller) DeleteVolumeGroup(opt *pb.DeleteVolumeGroupOpts) error {
-//	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
-//		log.Error("when connecting dock client:", err)
-//		return err
-//	}
-//
-//	response, err := c.Client.DeleteVolumeGroup(context.Background(), opt)
-//	if err != nil {
-//		log.Error("delete volume group failed in volume controller:", err)
-//		return err
-//	}
-//
-//	if errorMsg := response.GetError(); errorMsg != nil {
-//		return errors.New(errorMsg.GetDescription())
-//	}
-//
-//	return nil
-//}
-//
+func (c *controller) DeleteVolume(opt *pb.DeleteVolumeOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DeleteVolume(context.Background(), opt)
+	if err != nil {
+		log.Error("delete volume failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) ExtendVolume(opt *pb.ExtendVolumeOpts) (*model.VolumeSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.ExtendVolume(context.Background(), opt)
+	if err != nil {
+		log.Error("extend volume failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil,
+			fmt.Errorf("failed to extend volume in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var vol = &model.VolumeSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vol); err != nil {
+		log.Error("extend volume failed in volume controller:", err)
+		return nil, err
+	}
+
+	return vol, nil
+}
+
+func (c *controller) CreateVolumeAttachment(opt *pb.CreateVolumeAttachmentOpts) (*model.VolumeAttachmentSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.CreateVolumeAttachment(context.Background(), opt)
+	if err != nil {
+		log.Error("create volume attachment failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil,
+			fmt.Errorf("failed to create volume attachment in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var atc = &model.VolumeAttachmentSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), atc); err != nil {
+		log.Error("create volume attachment failed in volume controller:", err)
+		return nil, err
+	}
+
+	log.Infof("Volume controller: volume attachment creation successfully, %v", atc)
+
+	return atc, nil
+}
+
+func (c *controller) DeleteVolumeAttachment(opt *pb.DeleteVolumeAttachmentOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DeleteVolumeAttachment(context.Background(), opt)
+	if err != nil {
+		log.Error("delete volume attachment failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) CreateVolumeSnapshot(opt *pb.CreateVolumeSnapshotOpts) (*model.VolumeSnapshotSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.CreateVolumeSnapshot(context.Background(), opt)
+	if err != nil {
+		log.Error("create volume snapshot failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil,
+			fmt.Errorf("failed to create volume snapshot in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var snp = &model.VolumeSnapshotSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), snp); err != nil {
+		log.Error("create volume snapshot failed in volume controller:", err)
+		return nil, err
+	}
+
+	return snp, nil
+}
+
+func (c *controller) DeleteVolumeSnapshot(opt *pb.DeleteVolumeSnapshotOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DeleteVolumeSnapshot(context.Background(), opt)
+	if err != nil {
+		log.Error("delete volume snapshot failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) CreateReplication(opt *pb.CreateReplicationOpts) (*model.ReplicationSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.CreateReplication(context.Background(), opt)
+	if err != nil {
+		log.Error("create volume replication failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil,
+			fmt.Errorf("failed to create volume replication in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var snp = &model.ReplicationSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), snp); err != nil {
+		log.Error("create volume replication failed in volume controller:", err)
+		return nil, err
+	}
+
+	return snp, nil
+}
+
+func (c *controller) DeleteReplication(opt *pb.DeleteReplicationOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DeleteReplication(context.Background(), opt)
+	if err != nil {
+		log.Error("delete replication failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) EnableReplication(opt *pb.EnableReplicationOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.EnableReplication(context.Background(), opt)
+	if err != nil {
+		log.Error("enable replication failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) DisableReplication(opt *pb.DisableReplicationOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DisableReplication(context.Background(), opt)
+	if err != nil {
+		log.Error("disable replication failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) FailoverReplication(opt *pb.FailoverReplicationOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.FailoverReplication(context.Background(), opt)
+	if err != nil {
+		log.Error("failover replication failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) AttachVolume(opt *pb.AttachVolumeOpts) (string, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return "", err
+	}
+
+	response, err := c.Client.AttachVolume(context.Background(), opt)
+	if err != nil {
+		log.Error("attach volume failed in volume controller:", err)
+		return "", err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return "",
+			fmt.Errorf("failed to attach volume in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	return response.GetResult().GetMessage(), nil
+}
+
+func (c *controller) DetachVolume(opt *pb.DetachVolumeOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+	response, err := c.Client.DetachVolume(context.Background(), opt)
+	if err != nil {
+		log.Error("detach volume failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
+func (c *controller) CreateVolumeGroup(opt *pb.CreateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.CreateVolumeGroup(context.Background(), opt)
+	if err != nil {
+		log.Error("create volume group failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil,
+			fmt.Errorf("failed to create volume group in volume controller, code: %v, message: %v",
+				errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var vg = &model.VolumeGroupSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vg); err != nil {
+		log.Error("create volume group failed in volume controller:", err)
+		return nil, err
+	}
+
+	return vg, nil
+}
+
+func (c *controller) UpdateVolumeGroup(opt *pb.UpdateVolumeGroupOpts) (*model.VolumeGroupSpec, error) {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return nil, err
+	}
+
+	response, err := c.Client.UpdateVolumeGroup(context.Background(), opt)
+	if err != nil {
+		log.Error("update volume group failed in volume controller:", err)
+		return nil, err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return nil, fmt.Errorf("failed to update volume group in volume controller, code: %v, message: %v",
+			errorMsg.GetCode(), errorMsg.GetDescription())
+	}
+
+	var vg = &model.VolumeGroupSpec{}
+	if err = json.Unmarshal([]byte(response.GetResult().GetMessage()), vg); err != nil {
+		log.Error("update volume group failed in volume controller:", err)
+		return nil, err
+	}
+
+	return vg, nil
+}
+
+func (c *controller) DeleteVolumeGroup(opt *pb.DeleteVolumeGroupOpts) error {
+	if err := c.Client.Connect(c.DockInfo.Endpoint); err != nil {
+		log.Error("when connecting dock client:", err)
+		return err
+	}
+
+	response, err := c.Client.DeleteVolumeGroup(context.Background(), opt)
+	if err != nil {
+		log.Error("delete volume group failed in volume controller:", err)
+		return err
+	}
+
+	if errorMsg := response.GetError(); errorMsg != nil {
+		return errors.New(errorMsg.GetDescription())
+	}
+
+	return nil
+}
+
 
