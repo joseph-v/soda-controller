@@ -1,0 +1,62 @@
+version: '2'
+services:
+  osdsapiserver:
+    image: 'opensdsio/opensds-apiserver:latest'
+    tty: true
+    network_mode: "host"
+    volumes:
+    - /etc/opensds:/etc/opensds
+    depends_on:
+    - osdsdb
+    - osdsauthchecker
+    restart: on-failure
+    command: /bin/bash -c '/usr/bin/osdsapiserver -logtostderr'
+  osdslet:
+    image: 'opensdsio/opensds-controller:latest'
+    tty: true
+    network_mode: "host"
+    volumes:
+    - /etc/opensds:/etc/opensds
+    depends_on:
+    - osdsdb
+    restart: on-failure
+    command: /bin/bash -c '/usr/bin/osdslet -logtostderr'
+  osdsdock:
+    image: 'opensdsio/opensds-dock:latest'
+    tty: true
+    privileged: true
+    volumes:
+    - /etc/opensds:/etc/opensds
+    - /etc/ceph:/etc/ceph
+    - /etc/tgt:/etc/tgt:shared
+    - /run/:/run/:shared
+    - /dev/:/dev/
+    - /etc/localtime:/etc/localtime:ro
+    - /lib/modules:/lib/modules:ro
+    depends_on:
+    - osdsdb
+    network_mode: "host"
+    restart: on-failure
+    command: /bin/bash -c '/usr/sbin/tgtd && /usr/bin/osdsdock -logtostderr'
+  osdsdb:
+    image: 'quay.io/coreos/etcd:latest'
+    tty: true
+    network_mode: "host"
+    volumes:
+    - /usr/share/ca-certificates/:/etc/ssl/certs
+    restart: on-failure
+  osdsauthchecker:
+    image: 'opensdsio/opensds-authchecker:latest'
+    tty: true
+    network_mode: "host"
+    privileged: true
+    restart: on-failure
+  osdsdashboard:
+    image: 'opensdsio/dashboard:latest'
+    tty: true
+    network_mode: "host"
+    restart: on-failure
+    environment:
+    - OPENSDS_AUTH_URL=http://127.0.0.1/identity
+    - OPENSDS_HOTPOT_URL=http://127.0.0.1:50040
+    - OPENSDS_GELATO_URL=http://127.0.0.1:8089
