@@ -42,7 +42,7 @@ const (
 
 	// OpensdsConfigPath indicates the absolute path of opensds global
 	// configuration file.
-	OpensdsConfigPath = "/etc/opensds/soda-controller.conf"
+	OpensdsConfigPath = "/etc/opensds/soda-apiserver.conf"
 
 	// OpensdsCtrBindEndpoint indicates the bind endpoint which the opensds
 	// controller grpc server would listen to.
