@@ -28,7 +28,6 @@ import (
 	osdsCtx "github.com/opensds/soda-controller/pkg/context"
 	"github.com/opensds/soda-controller/pkg/controller/dr"
 	"github.com/opensds/soda-controller/pkg/controller/fileshare"
-	"github.com/opensds/soda-controller/pkg/controller/metrics"
 	"github.com/opensds/soda-controller/pkg/controller/policy"
 	"github.com/opensds/soda-controller/pkg/controller/selector"
 	"github.com/opensds/soda-controller/pkg/controller/volume"
@@ -49,12 +48,10 @@ const (
 func NewController() *Controller {
 	volCtrl := volume.NewController()
 	fileShareCtrl := fileshare.NewController()
-	metricsCtrl := metrics.NewController()
 	return &Controller{
 		selector:            selector.NewSelector(),
 		volumeController:    volCtrl,
 		fileshareController: fileShareCtrl,
-		metricsController:   metricsCtrl,
 		drController:        dr.NewController(volCtrl),
 	}
 }
@@ -63,7 +60,6 @@ type Controller struct {
 	selector            selector.Selector
 	volumeController    volume.Controller
 	fileshareController fileshare.Controller
-	metricsController   metrics.Controller
 	drController        dr.Controller
 	policyController    policy.Controller
 }
@@ -1086,91 +1082,4 @@ func (c *Controller) DeleteFileShareSnapshot(contx context.Context, opt *pb.Dele
 	}
 
 	return pb.GenericResponseResult(nil), nil
-}
-
-func (c *Controller) GetMetrics(context context.Context, opt *pb.GetMetricsOpts) (*pb.GenericResponse, error) {
-	log.Info("in controller get metrics methods")
-
-	var result []*model.MetricSpec
-	var err error
-
-	if opt.StartTime == "" && opt.EndTime == "" {
-		// no start and end time specified, get the latest value of this metric
-		result, err = c.metricsController.GetLatestMetrics(opt)
-	} else if opt.StartTime == opt.EndTime {
-		// same start and end time specified, get the value of this metric at that timestamp
-		result, err = c.metricsController.GetInstantMetrics(opt)
-	} else {
-		// range of start and end time is specified
-		result, err = c.metricsController.GetRangeMetrics(opt)
-	}
-
-	if err != nil {
-		log.Errorf("get metrics failed: %s\n", err.Error())
-
-		return pb.GenericResponseError(err), err
-	}
-
-	return pb.GenericResponseResult(result), err
-}
-
-func (c *Controller) CollectMetrics(context context.Context, opt *pb.CollectMetricsOpts) (*pb.GenericResponse, error) {
-	log.V(5).Info("in controller collect metrics methods")
-
-	ctx := osdsCtx.NewContextFromJson(opt.GetContext())
-	dockSpec, err := db.C.ListDocks(ctx)
-	if err != nil {
-		log.Errorf("list dock failed in CollectMetrics method: %s", err.Error())
-		return pb.GenericResponseError(err), err
-	}
-	for i, d := range dockSpec {
-		if d.DriverName == opt.DriverName {
-			log.Infof("driver found driver: %s", d.DriverName)
-			dockInfo, err := db.C.GetDock(ctx, dockSpec[i].BaseModel.Id)
-			if err != nil {
-				log.Errorf("error %s when search dock in db by dock id: %s", err.Error(), dockSpec[i].BaseModel.Id)
-				return pb.GenericResponseError(err), err
-
-			}
-			c.metricsController.SetDock(dockInfo)
-			result, err := c.metricsController.CollectMetrics(opt)
-			if err != nil {
-				log.Errorf("collectMetrics failed: %s", err.Error())
-
-				return pb.GenericResponseError(err), err
-			}
-
-			return pb.GenericResponseResult(result), nil
-		}
-	}
-	return nil, nil
-}
-
-func (c *Controller) GetUrls(context.Context, *pb.NoParams) (*pb.GenericResponse, error) {
-	log.V(5).Info("in controller get urls method")
-
-	var result *map[string]model.UrlDesc
-	var err error
-
-	result, err = c.metricsController.GetUrls()
-
-	// make return array
-	arrUrls := make([]model.UrlSpec, 0)
-
-	for k, v := range *result {
-		// make each url spec
-		urlSpec := model.UrlSpec{}
-		urlSpec.Name = k
-		urlSpec.Url = v.Url
-		urlSpec.Desc = v.Desc
-		// add to the array
-		arrUrls = append(arrUrls, urlSpec)
-	}
-
-	if err != nil {
-		log.Errorf("get urls failed: %s", err.Error())
-		return pb.GenericResponseError(err), err
-	}
-
-	return pb.GenericResponseResult(arrUrls), err
 }
