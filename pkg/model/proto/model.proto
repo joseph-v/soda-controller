@@ -156,7 +156,6 @@ service FileShareController {
 
     // Delete a file share Acl
     rpc DeleteFileShareAcl (DeleteFileShareAclOpts) returns (GenericResponse){}
-
 }
 
 service FileShareDock {
